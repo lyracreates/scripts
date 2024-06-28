@@ -76,22 +76,22 @@ task.wait(1)
 
 SG.Parent = game:GetService("Players").LocalPlayer.PlayerGui
 
+local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
-function TweenTransparency(t)
+
+local function TweenTransparency(t)
 	return TweenService:Create(CG, TweenInfo.new(0.15, Enum.EasingStyle.Sine), {
 		GroupTransparency = t,
 	})
 end
 
-function loadXenon()
-	local games = {
-		[0] = "newplace.luau"
-	}
-	
-	local link = games[game.GameId]
+local function loadXenon()
+	local games = HttpService:JSONDecode(game:HttpGet("https://github.com/lyracreates/scripts/blob/main/xenon/gamelist.json", true))
+
+	local filename = games[tostring(game.GameId)]
 	
 	return function()
-        pcall(loadstring, game:HttpGet(link))
+        pcall(loadstring, game:HttpGet(("https://github.com/lyracreates/scripts/blob/main/xenon/%s"):format(filename), true))
 	end
 end
 
@@ -101,4 +101,4 @@ local l = loadXenon()
 task.wait(2)
 TweenTransparency(1):Play()
 task.wait(1)
-coroutine.resume(coroutine.create(loadXenon()))
+coroutine.resume(coroutine.create(l))
